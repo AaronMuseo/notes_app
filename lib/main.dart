@@ -34,63 +34,119 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-late Box notesBox; //Open the box for storing notes
+  late Box notesBox; //Open the box for storing notes
 
-@override
+  @override
   void initState() {
-
     super.initState();
     notesBox = Hive.box('notes'); //opens up the box
   }
 
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-     appBar: AppBar(
-        title: Text("Notes"),
-        backgroundColor: Colors.amber,),
-          body: Stack(
-            children: [
-              Align(
-                alignment: Alignment.bottomRight,
-                  child: Padding(padding: EdgeInsets.all(8.0),
-                  child: ElevatedButton(onPressed: (){
-                    print("Added Note");
-                      }, child: Text("Add Note")
-              )
-            ),
+  void addnote() {
+    TextEditingController controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            title: Text("New Note"),
+            content: TextField(controller: controller,
+                decoration: InputDecoration(hintText: 'What\'s on your mind?')),
+            actions: [
+              TextButton(onPressed: () {
+                if (controller.text.isNotEmpty) {
+                  notesBox.add(
+                      controller.text); // Saves note to the Hive box 'notes'
+                  setState(() {}); // refresh UI
+                }
+                Navigator.pop(context);
+              },
+                  child: Text("Save"))
+            ],
           ),
-        ],
-      ),
     );
   }
-}
 
-class NotePage extends StatelessWidget {
-  const NotePage({super.key});
+  void deletenote(int index) {
+    notesBox.deleteAt(index);
+    setState(() {});
+  }
+
+  void editnote(int index) {
+    String currentNote = notesBox.getAt(index);
+    TextEditingController controller = TextEditingController(text: currentNote);
+
+    showDialog(context: context,
+      builder: (context) =>
+          AlertDialog(
+            title: Text('Edit Note'),
+            content: TextField(controller: controller),
+            actions: [
+              ElevatedButton(onPressed: () {
+                if (controller.text.isNotEmpty) {
+                  notesBox.putAt(index, controller.text);
+                  setState(() {});
+                }
+                Navigator.pop(context);
+              }, child: Text('Save')
+              )
+            ],
+          ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(padding: EdgeInsets.all(8.0),
-              child: ElevatedButton(onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const MyHomePage(title: "Home")
+      appBar: AppBar(title: Text('Notes'), backgroundColor: Colors.amber,),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(8.0),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          childAspectRatio: 1.5,
+        ),
+        itemCount: notesBox.length,
+        itemBuilder: (context, index){
+          return GestureDetector(
+            onTap: () => editnote(index),
+            child: Card(
+              color: Colors.yellow,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    notesBox.getAt(index),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                );
-              }, child: Text("Back"),
+                  IconButton(onPressed: () => deletenote(index),
+                      icon: const Icon(Icons.delete, color: Colors.black)
+                  ),
+                ],
+
+
               ),
             ),
-          ),
-        ],
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: addnote,
+        child: const Icon(Icons.add),
       ),
     );
   }
 }
+
+
+
+
+
+

@@ -2,15 +2,12 @@
 
 A new Flutter project to learn with
 
-## Getting Started
+Second Commit
 
-This project is a starting point for a Flutter application.
+-Page that shows the notes already written with an add note button on the bottom right
+-pop up that allows you to write a note but in a text field
+-added Hive as a no sql database that stores notes locally
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+*To do
+-Change the note writing to either a new page or a large popup that allows entry of Title
+-Try and remove the save button and make it relly if note is empty or not

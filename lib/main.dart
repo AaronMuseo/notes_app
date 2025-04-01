@@ -126,24 +126,62 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     textAlign: TextAlign.center,
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
                   IconButton(onPressed: () => deletenote(index),
                       icon: const Icon(Icons.delete, color: Colors.black)
                   ),
-                ],
+                  IconButton(onPressed: (){
+
+                    //Make note favourite
+
+                  }, icon: Icon(Icons.favorite_outline)),
 
 
-              ),
-            ),
+                  ],
+                )
+              ]
+              )
+            )
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: addnote,
-        child: const Icon(Icons.add),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.amberAccent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(onPressed: (){
+
+              //Add functonality to favourite button
+
+            }, icon: Icon(Icons.favorite)),
+            IconButton(onPressed: (){
+              setState(() {
+
+              });
+              //Add functionality to dark mode button
+
+            }, icon: Icon(Icons.dark_mode)),
+            Spacer(),
+            ElevatedButton(onPressed: addnote,
+                child: Icon(Icons.add))
+          ],
+        )
+
       ),
+
     );
   }
 }
+
+
+
+
+
+
+
 
 
 

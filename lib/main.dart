@@ -43,30 +43,47 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  void addnote() {
+  void addnote(){
     TextEditingController controller = TextEditingController();
 
-    showDialog(
-      context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text("New Note"),
-            content: TextField(controller: controller,
-                decoration: InputDecoration(hintText: 'What\'s on your mind?')),
-            actions: [
-              TextButton(onPressed: () {
-                if (controller.text.isNotEmpty) {
-                  notesBox.add(
-                      controller.text); // Saves note to the Hive box 'notes'
-                  setState(() {}); // refresh UI
-                }
-                Navigator.pop(context);
-              },
-                  child: Text("Save"))
-            ],
-          ),
+    showModalBottomSheet(context: context,
+        isScrollControlled: true,//allows sheet to be fullscreen
+        builder: (context){
+          return Container(
+            padding: EdgeInsets.all(16),
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("New Note"),
+                SizedBox(height: 10),
+                TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    hintText: "Whats on your mind?",
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                ),
+                Spacer(),
+                ElevatedButton(onPressed: (){
+                  if(controller.text.isNotEmpty){
+                    notesBox.add(controller.text);
+                    setState(() {});
+                  }
+                  Navigator.pop(context);
+                }, child: Text("Save"),
+
+                )
+              ],
+            ),
+          );
+        }
     );
   }
+
+
 
   void deletenote(int index) {
     notesBox.deleteAt(index);
@@ -77,22 +94,39 @@ class _MyHomePageState extends State<MyHomePage> {
     String currentNote = notesBox.getAt(index);
     TextEditingController controller = TextEditingController(text: currentNote);
 
-    showDialog(context: context,
-      builder: (context) =>
-          AlertDialog(
-            title: Text('Edit Note'),
-            content: TextField(controller: controller),
-            actions: [
-              ElevatedButton(onPressed: () {
-                if (controller.text.isNotEmpty) {
+    showModalBottomSheet(context: context,
+        isScrollControlled: true,
+        builder: (context){
+        return Container(
+          padding: EdgeInsets.all(16),
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Edit Note"),
+              SizedBox(height: 10),
+              TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder()
+                ),
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+              ),
+              Spacer(),
+              ElevatedButton(onPressed: (){
+                if(controller.text.isNotEmpty){
                   notesBox.putAt(index, controller.text);
                   setState(() {});
                 }
                 Navigator.pop(context);
-              }, child: Text('Save')
+
+              },child: Text("Save")
               )
             ],
           ),
+        );
+      }
     );
   }
 
@@ -175,13 +209,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
-
-
-
-
-
 
 
 
